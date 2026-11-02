@@ -1,7 +1,7 @@
 import { chromium, webkit, firefox } from 'playwright';
 import fs from 'fs';
 
-async function testBrowser(browserType, outputFile) {
+async function testBrowser(browserType, outputFile, launchOptions = {}) {
   const wikepediaHTML = fs.readFileSync('../fixtures/wikipedia/wikipedia_on_wikipedia.html', 'utf8');
   const titleExpectation = fs.readFileSync('../fixtures/wikipedia/title.txt', 'utf-8');
   const charsetExpectation = fs.readFileSync('../fixtures/wikipedia/charset.txt', 'utf-8');
@@ -11,7 +11,7 @@ async function testBrowser(browserType, outputFile) {
     charset: charsetExpectation,
   }
 
-  const browser = await browserType.launch();
+  const browser = await browserType.launch(launchOptions);
 
   const page = await browser.newPage();
 
@@ -52,7 +52,7 @@ async function testBrowser(browserType, outputFile) {
 }
 
 async function main() {
-  await testBrowser(chromium, './chromium.txt');
+  await testBrowser(chromium, './chromium.txt', { channel: 'chrome', chromiumSandbox: true });
   await testBrowser(webkit, './webkit.txt');
   await testBrowser(firefox, './firefox.txt');
 }
